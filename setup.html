@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Configuração — A Volta em Arton</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <svg class="sigil" viewBox="0 0 100 100" fill="none">
+      <polygon points="50,4 93,27 93,73 50,96 7,73 7,27" stroke="#d6ab5e" stroke-width="4"/>
+      <polygon points="50,4 93,27 50,50 7,27" fill="#d6ab5e" opacity=".18"/>
+      <text x="50" y="60" text-anchor="middle" font-family="JetBrains Mono" font-size="30" fill="#d6ab5e" font-weight="700">20</text>
+    </svg>
+    A Volta em Arton
+  </div>
+  <nav>
+    <a href="index.html">Início</a>
+    <a href="ficha.html">Fichas</a>
+    <a href="combate.html">Combate</a>
+  </nav>
+</header>
+
+<div class="shell">
+
+  <section style="padding: 8px 0 28px;">
+    <span class="eyebrow">Faça isso uma única vez</span>
+    <h1>Ativar sincronização entre os aparelhos</h1>
+    <p class="lede">
+      Sem esse passo, cada jogador só vê os dados salvos no próprio navegador.
+      Com ele, todo mundo — cada um no seu computador ou celular — enxerga as
+      mesmas fichas e a mesma cena de combate. Usa um serviço gratuito
+      (<a href="https://jsonblob.com" target="_blank" rel="noopener">jsonblob.com</a>),
+      sem precisar criar conta. Leva uns 2 minutos. <strong>Só uma pessoa do grupo
+      precisa fazer isso</strong> — depois, todo mundo usa o mesmo arquivo de configuração.
+    </p>
+  </section>
+
+  <div class="panel">
+    <h2>Passo 1 — Criar o "blob" de personagens</h2>
+    <ol class="lede small" style="padding-left:20px;">
+      <li>Abra <a href="https://jsonblob.com" target="_blank" rel="noopener">jsonblob.com</a> em uma nova aba.</li>
+      <li>Apague o conteúdo de exemplo do editor e cole isto no lugar:
+        <pre style="background:var(--bg-inset);border:1px solid var(--line);border-radius:6px;padding:10px 12px;overflow-x:auto;font-family:var(--font-mono);font-size:.82rem;">{"mestreSenha":"","fichas":[],"inimigos":[]}</pre>
+      </li>
+      <li>Clique em <strong>"Save new JSONBlob"</strong> (ou botão equivalente de salvar).</li>
+      <li>A página vai mostrar uma URL parecida com <code>https://jsonblob.com/1234abcd-...</code>. Copie só a parte final (o ID depois da última barra).</li>
+    </ol>
+  </div>
+
+  <div class="panel">
+    <h2>Passo 2 — Criar o "blob" de combate</h2>
+    <p class="lede small">Repita o processo acima, mas cole este conteúdo:</p>
+    <pre style="background:var(--bg-inset);border:1px solid var(--line);border-radius:6px;padding:10px 12px;overflow-x:auto;font-family:var(--font-mono);font-size:.82rem;">{"combatentes":[],"turnoIdx":-1,"log":[]}</pre>
+    <p class="lede small">Salve e copie o segundo ID.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Passo 3 — Colar os IDs no arquivo <code>js/config.js</code></h2>
+    <p class="lede small">Abra o arquivo <code>js/config.js</code> (dentro da pasta do site) em qualquer editor de texto e troque estas duas linhas, colando seus IDs no lugar de <code>COLOQUE_SEU_ID_AQUI</code>:</p>
+    <pre style="background:var(--bg-inset);border:1px solid var(--line);border-radius:6px;padding:10px 12px;overflow-x:auto;font-family:var(--font-mono);font-size:.82rem;">window.ARTON_BLOB_PERSONAGENS = 'COLOQUE_SEU_ID_AQUI'; // ID do passo 1
+window.ARTON_BLOB_COMBATE     = 'COLOQUE_SEU_ID_AQUI'; // ID do passo 2</pre>
+    <p class="lede small">
+      Salve o arquivo, suba a pasta inteira (com essa alteração) pro lugar onde
+      todo mundo acessa — por exemplo, uma página no GitHub Pages — e pronto:
+      qualquer pessoa que abrir o site vai estar lendo e escrevendo nesses
+      mesmos dois arquivos na nuvem.
+    </p>
+  </div>
+
+  <div class="panel" style="border-color:var(--blood);">
+    <h3 style="color:var(--blood-bright);">Sobre segurança</h3>
+    <p class="lede small">
+      Esse armazenamento é público e sem autenticação: qualquer pessoa que
+      souber os dois IDs consegue ler ou sobrescrever os dados diretamente,
+      sem passar pelo site. As senhas dos personagens também trafegam em
+      texto puro. Isso é adequado pra travar bisbilhotice casual entre amigos
+      — não use isso pra guardar nada sensível de verdade.
+    </p>
+  </div>
+
+</div>
+
+</body>
+</html>

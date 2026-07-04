@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Volta em Arton — Dossiê de Campo</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <svg class="sigil" viewBox="0 0 100 100" fill="none">
+      <polygon points="50,4 93,27 93,73 50,96 7,73 7,27" stroke="#d6ab5e" stroke-width="4"/>
+      <polygon points="50,4 93,27 50,50 7,27" fill="#d6ab5e" opacity=".18"/>
+      <text x="50" y="60" text-anchor="middle" font-family="JetBrains Mono" font-size="30" fill="#d6ab5e" font-weight="700">20</text>
+    </svg>
+    A Volta em Arton
+  </div>
+  <nav>
+    <a href="index.html" class="active">Início</a>
+    <a href="ficha.html">Fichas</a>
+    <a href="combate.html">Combate</a>
+    <a href="setup.html">Configuração</a>
+  </nav>
+</header>
+
+<div class="shell">
+
+  <section style="padding: 24px 0 44px;">
+    <span class="eyebrow">Dossiê de campo — mesa de Sivirino &amp; companhia</span>
+    <h1>Registre a ficha. Role o dado. Sobreviva a Arton.</h1>
+    <p class="lede">
+      Uma ferramenta simples pra nossa mesa: guarde a ficha de cada personagem no seu
+      próprio navegador e resolva combates — iniciativa, ataque contra defesa e dano —
+      sem precisar decorar as regras da casa.
+    </p>
+    <div class="btn-row" style="margin-top:22px;">
+      <a class="btn btn-brass" href="ficha.html">Abrir fichas de personagem</a>
+      <a class="btn" href="combate.html">Ir para o simulador de combate</a>
+    </div>
+  </section>
+
+  <div class="grid grid-2">
+    <div class="panel">
+      <h2>📜 Fichas de personagem</h2>
+      <p class="lede small">
+        Crie, edite e guarde a ficha completa: vida, sanidade, energia, atributos com
+        suas perícias, talentos e inventário — no mesmo formato que a gente já usa.
+        Cada ficha fica salva no navegador; dá pra exportar em JSON pra mandar pro grupo
+        ou levar pra outro computador.
+      </p>
+      <a class="btn" href="ficha.html">Gerenciar fichas →</a>
+    </div>
+    <div class="panel">
+      <h2>⚔️ Simulador de combate</h2>
+      <p class="lede small">
+        Monte a ordem de iniciativa, acompanhe PV e PM de todo mundo em cena, e resolva
+        ataques rolando d20 + bônus do atacante contra d20 + bônus do defensor. 20 natural
+        é crítico; o multiplicador da arma se aplica só nos dados de dano.
+      </p>
+      <a class="btn" href="combate.html">Abrir simulador →</a>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Elenco fixo, senha e mestre</h3>
+    <p class="lede small">
+      A ficha só existe pra Sivirino, Raimundo, Beatriz, Edwin/Ravi, Le'Shan e Kaska —
+      cada um protegido pela própria senha (você cria na primeira vez que entrar).
+      O mestre entra com uma senha própria, vê todas as fichas sem precisar de senha
+      de ninguém, e é o único que pode criar inimigos — que aparecem no combate com
+      os status ocultos pros jogadores. Pra tudo isso sincronizar entre os aparelhos
+      do grupo, é preciso fazer uma <a href="setup.html">configuração rápida</a> uma
+      única vez.
+    </p>
+  </div>
+
+  <div class="panel">
+    <h3>Como funciona a rolagem</h3>
+    <p class="lede small">
+      <strong>Teste oposto:</strong> o atacante rola d20 + bônus da perícia de ataque; o
+      alvo rola d20 + bônus de defesa/esquiva. Quem tirar o maior total vence. Um 20 natural
+      no ataque é crítico (multiplica os dados de dano da arma); um 1 natural é falha
+      automática. Esses dois últimos pontos são suposições razoáveis pra sistema caseiro —
+      se o mestre de vocês definir diferente, me avisa que eu ajusto o simulador.
+    </p>
+  </div>
+
+</div>
+
+</body>
+</html>
