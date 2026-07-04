@@ -32,53 +32,58 @@
     <p class="lede">
       Sem esse passo, cada jogador só vê os dados salvos no próprio navegador.
       Com ele, todo mundo — cada um no seu computador ou celular — enxerga as
-      mesmas fichas e a mesma cena de combate. Usa um serviço gratuito
-      (<a href="https://jsonblob.com" target="_blank" rel="noopener">jsonblob.com</a>),
-      sem precisar criar conta. Leva uns 2 minutos. <strong>Só uma pessoa do grupo
-      precisa fazer isso</strong> — depois, todo mundo usa o mesmo arquivo de configuração.
+      mesmas fichas e a mesma cena de combate. A sincronização usa o
+      <strong>Firebase Realtime Database</strong> (gratuito no plano usado
+      aqui). As chaves do projeto já vêm prontas dentro de <code>js/config.js</code>,
+      então só falta um passo: liberar a leitura/escrita no banco.
+      <strong>Só uma pessoa do grupo (o mestre, de preferência) precisa fazer isso.</strong>
     </p>
   </section>
 
   <div class="panel">
-    <h2>Passo 1 — Criar o "blob" de personagens</h2>
+    <h2>Passo 1 — Abrir as regras do Realtime Database</h2>
     <ol class="lede small" style="padding-left:20px;">
-      <li>Abra <a href="https://jsonblob.com" target="_blank" rel="noopener">jsonblob.com</a> em uma nova aba.</li>
-      <li>Apague o conteúdo de exemplo do editor e cole isto no lugar:
-        <pre style="background:var(--bg-inset);border:1px solid var(--line);border-radius:6px;padding:10px 12px;overflow-x:auto;font-family:var(--font-mono);font-size:.82rem;">{"mestreSenha":"","fichas":[],"inimigos":[]}</pre>
-      </li>
-      <li>Clique em <strong>"Save new JSONBlob"</strong> (ou botão equivalente de salvar).</li>
-      <li>A página vai mostrar uma URL parecida com <code>https://jsonblob.com/1234abcd-...</code>. Copie só a parte final (o ID depois da última barra).</li>
+      <li>Entre no <a href="https://console.firebase.google.com" target="_blank" rel="noopener">console do Firebase</a> com a conta Google usada pra criar o projeto.</li>
+      <li>Abra o projeto do grupo (o mesmo cujo <code>databaseURL</code> aparece em <code>js/config.js</code>).</li>
+      <li>No menu à esquerda, vá em <strong>Build → Realtime Database</strong>.</li>
+      <li>Clique na aba <strong>Rules</strong> (Regras).</li>
     </ol>
   </div>
 
   <div class="panel">
-    <h2>Passo 2 — Criar o "blob" de combate</h2>
-    <p class="lede small">Repita o processo acima, mas cole este conteúdo:</p>
-    <pre style="background:var(--bg-inset);border:1px solid var(--line);border-radius:6px;padding:10px 12px;overflow-x:auto;font-family:var(--font-mono);font-size:.82rem;">{"combatentes":[],"turnoIdx":-1,"log":[]}</pre>
-    <p class="lede small">Salve e copie o segundo ID.</p>
+    <h2>Passo 2 — Liberar leitura e escrita</h2>
+    <p class="lede small">Apague o conteúdo e cole isto no lugar:</p>
+    <pre style="background:var(--bg-inset);border:1px solid var(--line);border-radius:6px;padding:10px 12px;overflow-x:auto;font-family:var(--font-mono);font-size:.82rem;">{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}</pre>
+    <p class="lede small">Clique em <strong>Publish</strong> (Publicar). Pronto — o site já consegue ler e gravar no banco.</p>
   </div>
 
   <div class="panel">
-    <h2>Passo 3 — Colar os IDs no arquivo <code>js/config.js</code></h2>
-    <p class="lede small">Abra o arquivo <code>js/config.js</code> (dentro da pasta do site) em qualquer editor de texto e troque estas duas linhas, colando seus IDs no lugar de <code>COLOQUE_SEU_ID_AQUI</code>:</p>
-    <pre style="background:var(--bg-inset);border:1px solid var(--line);border-radius:6px;padding:10px 12px;overflow-x:auto;font-family:var(--font-mono);font-size:.82rem;">window.ARTON_BLOB_PERSONAGENS = 'COLOQUE_SEU_ID_AQUI'; // ID do passo 1
-window.ARTON_BLOB_COMBATE     = 'COLOQUE_SEU_ID_AQUI'; // ID do passo 2</pre>
+    <h2>Passo 3 — Testar</h2>
     <p class="lede small">
-      Salve o arquivo, suba a pasta inteira (com essa alteração) pro lugar onde
-      todo mundo acessa — por exemplo, uma página no GitHub Pages — e pronto:
-      qualquer pessoa que abrir o site vai estar lendo e escrevendo nesses
-      mesmos dois arquivos na nuvem.
+      Abra <a href="ficha.html">ficha.html</a> em dois navegadores (ou computador +
+      celular), logue com o mesmo personagem em um deles, edite algo e recarregue
+      o outro — a mudança deve aparecer. Se não aparecer, abra o Console do
+      navegador (F12) e veja se há algum erro relacionado a <code>firebase</code>
+      ou <code>permission_denied</code>: isso normalmente indica que o Passo 2
+      não foi publicado corretamente.
     </p>
   </div>
 
   <div class="panel" style="border-color:var(--blood);">
     <h3 style="color:var(--blood-bright);">Sobre segurança</h3>
     <p class="lede small">
-      Esse armazenamento é público e sem autenticação: qualquer pessoa que
-      souber os dois IDs consegue ler ou sobrescrever os dados diretamente,
-      sem passar pelo site. As senhas dos personagens também trafegam em
-      texto puro. Isso é adequado pra travar bisbilhotice casual entre amigos
-      — não use isso pra guardar nada sensível de verdade.
+      Com <code>".read": true, ".write": true</code>, o banco fica público e
+      sem autenticação: qualquer pessoa que souber a URL do projeto (que
+      aparece em <code>js/config.js</code>, exposto no navegador de qualquer
+      jogador) consegue ler ou sobrescrever os dados diretamente, sem passar
+      pelo site. As senhas dos personagens também trafegam em texto puro.
+      Isso é adequado pra travar bisbilhotice casual entre amigos — não use
+      isso pra guardar nada sensível de verdade.
     </p>
   </div>
 

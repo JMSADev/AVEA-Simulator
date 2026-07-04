@@ -1,20 +1,30 @@
 /* =========================================================
-   Sincronização com a nuvem (jsonblob.com) — com cache local
+   Sincronização com a nuvem (Firebase Realtime Database) — com cache local
    ---------------------------------------------------------
-   Cada "store" (personagens / combate) tem sua própria URL, sua
-   própria chave de cache local e seu próprio dado-padrão.
+   Cada "store" (personagens / combate) tem seu próprio caminho dentro
+   do Realtime Database, sua própria chave de cache local e seu
+   próprio dado-padrão. A interface (load/save/scheduleSave) é a mesma
+   de antes — só a forma de buscar/gravar na nuvem mudou (era jsonblob
+   via fetch, agora é Firebase), então ficha.js e combate.js não
+   precisaram mudar nada.
 ========================================================= */
 
-function isBlobConfigured(url){
-  return typeof url === 'string' && url && !url.includes('COLOQUE_SEU_ID_AQUI');
+function isFirebaseConfigured(){
+  return !!(
+    window.ARTON_FIREBASE_DB &&
+    window.ARTON_FIREBASE_CONFIG &&
+    window.ARTON_FIREBASE_CONFIG.apiKey &&
+    window.ARTON_FIREBASE_CONFIG.databaseURL
+  );
 }
 
 function createSyncStore({ name, url, defaultData }){
   const cacheKey = `arton_cache_${name}`;
+  const path = url; // agora "url" é o caminho dentro do Realtime Database (ex: 'personagens')
   const store = {
     data: null,
     loaded: false,
-    configured: isBlobConfigured(url),
+    configured: isFirebaseConfigured(),
     saving: false,
     lastError: null,
 
@@ -35,9 +45,8 @@ function createSyncStore({ name, url, defaultData }){
         return store.data;
       }
       try{
-        const res = await fetch(url, { cache: 'no-store' });
-        if(!res.ok) throw new Error('status ' + res.status);
-        const remote = await res.json();
+        const snap = await window.ARTON_FIREBASE_DB.ref(path).once('value');
+        const remote = snap.val();
         const merged = Object.assign(defaultData(), remote || {});
         store.data = merged;
         store.loaded = true;
@@ -57,12 +66,7 @@ function createSyncStore({ name, url, defaultData }){
       if(!store.configured) return true;
       store.saving = true;
       try{
-        const res = await fetch(url, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(store.data)
-        });
-        if(!res.ok) throw new Error('status ' + res.status);
+        await window.ARTON_FIREBASE_DB.ref(path).set(store.data);
         store.lastError = null;
         return true;
       }catch(e){
@@ -78,7 +82,7 @@ function createSyncStore({ name, url, defaultData }){
 }
 
 /* debounced save helper: call scheduleSave(store) repeatedly, it only
-   actually PUTs to the cloud ~700ms after the last call. */
+   actually grava na nuvem ~700ms depois da última chamada. */
 const _saveTimers = new Map();
 function scheduleSave(store, onDone){
   store.setCache(store.data);

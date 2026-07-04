@@ -1,19 +1,34 @@
 /* =========================================================
-   Configuração — elenco fixo, endpoints de sincronização, ícones
+   Configuração — elenco fixo, sincronização (Firebase), ícones
    ---------------------------------------------------------
    Pra sincronizar as fichas entre os aparelhos de todo mundo, este
-   site usa dois "blobs" JSON gratuitos do jsonblob.com (sem
-   cadastro). Veja setup.html pra criar os seus e cole os IDs abaixo.
+   site usa o Firebase Realtime Database. As chaves abaixo já são
+   as do projeto do grupo — não precisa mexer aqui de novo, a menos
+   que troquem de projeto no Firebase.
 ========================================================= */
 
-// Cole aqui os IDs que você criar em jsonblob.com (veja setup.html).
-// Enquanto estiverem com o valor de exemplo, o site funciona só localmente
-// (cada aparelho vê só os próprios dados) e mostra um aviso na tela.
-window.ARTON_BLOB_PERSONAGENS = '019f2e14-c969-79be-abf4-0d8818700171';
-window.ARTON_BLOB_COMBATE     = '019f2e18-9674-7774-8590-675a976085c3';
+window.ARTON_FIREBASE_CONFIG = {
+  apiKey: "AIzaSyA79SB58pYS3VIMmdTJj_vZrlEW1c2Nh1w",
+  authDomain: "avea-b6cdc.firebaseapp.com",
+  databaseURL: "https://avea-b6cdc-default-rtdb.firebaseio.com",
+  projectId: "avea-b6cdc",
+  storageBucket: "avea-b6cdc.firebasestorage.app",
+  messagingSenderId: "603116504028",
+  appId: "1:603116504028:web:293561a82954b45feec519",
+};
 
-window.ARTON_SYNC_PERSONAGENS_URL = `https://jsonblob.com/api/jsonBlob/${window.ARTON_BLOB_PERSONAGENS}`;
-window.ARTON_SYNC_COMBATE_URL     = `https://jsonblob.com/api/jsonBlob/${window.ARTON_BLOB_COMBATE}`;
+// Inicializa o Firebase uma única vez (os scripts firebase-app-compat.js
+// e firebase-database-compat.js precisam ser carregados ANTES deste arquivo
+// — veja o <head>/<body> de combate.html e ficha.html).
+if(!window.ARTON_FIREBASE_APP){
+  window.ARTON_FIREBASE_APP = firebase.initializeApp(window.ARTON_FIREBASE_CONFIG);
+  window.ARTON_FIREBASE_DB  = firebase.database();
+}
+
+// "Caminhos" dentro do Realtime Database — equivalentes aos antigos IDs
+// de blob do jsonblob.com. Não precisam ser secretos nem trocados.
+window.ARTON_SYNC_PERSONAGENS_URL = 'personagens';
+window.ARTON_SYNC_COMBATE_URL     = 'combate';
 
 // Elenco fixo dos jogadores. Cada um tem sua própria senha (definida por
 // eles mesmos no primeiro acesso) guardada dentro da ficha na nuvem.
