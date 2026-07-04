@@ -78,8 +78,8 @@ function blankFichaFor(rosterEntry){
     sanidade: { atual: 10, max: 10 },
     energia:  { atual: 10, max: 10 },
     atributos: window.ARTON_DEFAULT_ATRIBUTOS.map(a => ({
-      nome: a.nome, mod: a.mod,
-      pericias: a.pericias.map(p => ({ nome: p, base: 0, bonus: 0 }))
+      nome: a.nome, mod: a.mod, vantagens: 0,
+      pericias: a.pericias.map(p => ({ nome: p, base: 0, bonus: 0, vantagens: 0 }))
     })),
     talentos: [],
     inventario: [],
@@ -104,11 +104,15 @@ function sanearFicha(f){
   if(!Array.isArray(f.inventario)) f.inventario = [];
   if(!Array.isArray(f.atributos) || f.atributos.length === 0){
     f.atributos = window.ARTON_DEFAULT_ATRIBUTOS.map(a => ({
-      nome: a.nome, mod: 0,
-      pericias: a.pericias.map(p => ({ nome: p, base: 0, bonus: 0 }))
+      nome: a.nome, mod: 0, vantagens: 0,
+      pericias: a.pericias.map(p => ({ nome: p, base: 0, bonus: 0, vantagens: 0 }))
     }));
   } else {
-    f.atributos.forEach(attr => { if(!Array.isArray(attr.pericias)) attr.pericias = []; });
+    f.atributos.forEach(attr => {
+      if(!Array.isArray(attr.pericias)) attr.pericias = [];
+      if(typeof attr.vantagens !== 'number') attr.vantagens = 0;
+      attr.pericias.forEach(p => { if(typeof p.vantagens !== 'number') p.vantagens = 0; });
+    });
   }
   if(!f.vida)     f.vida     = { atual: 10, max: 10 };
   if(!f.sanidade) f.sanidade = { atual: 10, max: 10 };

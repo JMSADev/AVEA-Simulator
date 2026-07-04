@@ -322,7 +322,7 @@ button:active, .btn:active{ transform: translateY(1px); }
 }
 .skill-row{
   display:grid;
-  grid-template-columns: 1fr 56px 56px 46px auto;
+  grid-template-columns: 1fr 56px 56px 46px 76px auto;
   gap: 6px;
   align-items:center;
   margin-bottom: 6px;
@@ -334,6 +334,32 @@ button:active, .btn:active{ transform: translateY(1px); }
   background: var(--bg-panel-2);
   border-radius:4px; border:1px solid var(--line);
   padding: 6px 0;
+}
+
+/* ---------- vantagens (contador de vantagem em perícia/atributo) ---------- */
+
+.vantagem-widget{
+  display:flex; align-items:center; justify-content:center;
+  gap: 4px;
+}
+.vantagem-btn{
+  width: 20px; height: 20px; flex: none;
+  display:flex; align-items:center; justify-content:center;
+  border: 1px solid rgba(90,168,110,.5);
+  background: rgba(90,168,110,.12);
+  color: #7cd996;
+  border-radius: 4px;
+  font-family: var(--font-mono); font-weight:700; font-size:.82rem;
+  cursor: pointer; line-height:1; padding:0;
+}
+.vantagem-btn:hover{ background: rgba(90,168,110,.24); }
+.vantagem-count{
+  min-width: 20px; text-align:center;
+  font-family: var(--font-mono); font-weight:700; font-size:.82rem;
+  color: #0e1712;
+  background: #5aa86e;
+  border-radius: 4px;
+  padding: 3px 6px;
 }
 
 /* ---------- generic list rows (talentos / inventário) ---------- */

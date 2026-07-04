@@ -203,7 +203,7 @@ function renderEditorFicha(fichaId, opts){
   wrap.appendChild(el('div', { class:'panel' }, [
     el('div', { class:'panel-head' }, [
       el('h2', {}, ['Atributos e perícias']),
-      el('button', { class:'btn-sm', onclick: () => { f.atributos.push({ nome:'Novo atributo', mod:0, pericias:[] }); scheduleSave(personagensStore); renderApp(); } }, ['+ Atributo'])
+      el('button', { class:'btn-sm', onclick: () => { f.atributos.push({ nome:'Novo atributo', mod:0, vantagens:0, pericias:[] }); scheduleSave(personagensStore); renderApp(); } }, ['+ Atributo'])
     ]),
     attrGrid
   ]));
@@ -277,16 +277,30 @@ function blocoGauge(titulo, obj, gaugeClass){
   return wrap;
 }
 
+function vantagemWidget(obj){
+  if(typeof obj.vantagens !== 'number') obj.vantagens = 0;
+  const count = el('span', { class:'vantagem-count' }, [String(obj.vantagens)]);
+  const atualizar = () => { count.textContent = String(obj.vantagens); scheduleSave(personagensStore); };
+  const menos = el('button', { type:'button', class:'vantagem-btn', title:'Remover vantagem',
+    onclick: () => { obj.vantagens = Math.max(0, (obj.vantagens||0) - 1); atualizar(); } }, ['−']);
+  const mais = el('button', { type:'button', class:'vantagem-btn', title:'Adicionar vantagem',
+    onclick: () => { obj.vantagens = (obj.vantagens||0) + 1; atualizar(); } }, ['+']);
+  return el('div', { class:'vantagem-widget', title:'Vantagens (role 2 vezes e use o melhor)' }, [menos, count, mais]);
+}
+
 function blocoAtributo(f, attr, ai){
   attr.pericias = attr.pericias || []; // idem: array vazio some no Firebase
   const card = el('div', { class:'attr-card' });
   card.appendChild(el('div', { class:'attr-card-head' }, [
     el('input', { type:'text', value: attr.nome, style:'font-family:var(--font-mono);text-transform:uppercase;font-size:.78rem;letter-spacing:.1em;background:transparent;border:none;color:var(--brass-bright);padding:0;',
       oninput: e => attr.nome = e.target.value }),
-    el('input', { type:'number', class:'attr-mod num-mono', value: attr.mod, oninput: e => attr.mod = parseInt(e.target.value||0,10) }),
+    el('div', { style:'display:flex;align-items:center;gap:8px;' }, [
+      el('input', { type:'number', class:'attr-mod num-mono', value: attr.mod, oninput: e => attr.mod = parseInt(e.target.value||0,10) }),
+      vantagemWidget(attr)
+    ]),
   ]));
   card.appendChild(el('div', { class:'skill-row', style:'color:var(--ink-mute);font-size:.66rem;text-transform:uppercase;letter-spacing:.06em;' }, [
-    el('span', {}, ['Perícia']), el('span', {}, ['Base']), el('span', {}, ['Bônus']), el('span', {}, ['Total']), el('span', {}, [''])
+    el('span', {}, ['Perícia']), el('span', {}, ['Base']), el('span', {}, ['Bônus']), el('span', {}, ['Total']), el('span', {}, ['Vant.']), el('span', {}, [''])
   ]));
   attr.pericias.forEach((p, pi) => {
     const total = (parseInt(p.base||0,10) + parseInt(p.bonus||0,10));
@@ -296,10 +310,11 @@ function blocoAtributo(f, attr, ai){
       el('input', { type:'number', value:p.base, oninput: e => { p.base = parseInt(e.target.value||0,10); totalSpan.textContent = p.base + parseInt(p.bonus||0,10); } }),
       el('input', { type:'number', value:p.bonus, oninput: e => { p.bonus = parseInt(e.target.value||0,10); totalSpan.textContent = parseInt(p.base||0,10) + p.bonus; } }),
       totalSpan,
+      vantagemWidget(p),
       el('button', { class:'btn-sm btn-ghost', onclick: () => { attr.pericias.splice(pi,1); scheduleSave(personagensStore); renderApp(); } }, ['✕'])
     ]));
   });
-  card.appendChild(el('button', { class:'btn-sm', style:'margin-top:6px;', onclick: () => { attr.pericias.push({ nome:'Nova perícia', base:0, bonus:0 }); scheduleSave(personagensStore); renderApp(); } }, ['+ Perícia']));
+  card.appendChild(el('button', { class:'btn-sm', style:'margin-top:6px;', onclick: () => { attr.pericias.push({ nome:'Nova perícia', base:0, bonus:0, vantagens:0 }); scheduleSave(personagensStore); renderApp(); } }, ['+ Perícia']));
   card.appendChild(el('button', { class:'btn-sm btn-ghost', style:'margin-top:6px;margin-left:6px;', onclick: () => { f.atributos.splice(ai,1); scheduleSave(personagensStore); renderApp(); } }, ['Remover atributo']));
   return card;
 }
