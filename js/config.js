@@ -95,12 +95,36 @@ function defaultPersonagensData(){
   };
 }
 
+// Firebase Realtime Database remove (não grava) campos que são array vazio.
+// Isso significa que, depois de ida-e-volta pela nuvem, `talentos: []` ou
+// `inventario: []` (ou `pericias: []` dentro de um atributo) podem voltar
+// como `undefined` em vez de array vazio. Esta função repara isso.
+function sanearFicha(f){
+  if(!Array.isArray(f.talentos)) f.talentos = [];
+  if(!Array.isArray(f.inventario)) f.inventario = [];
+  if(!Array.isArray(f.atributos) || f.atributos.length === 0){
+    f.atributos = window.ARTON_DEFAULT_ATRIBUTOS.map(a => ({
+      nome: a.nome, mod: 0,
+      pericias: a.pericias.map(p => ({ nome: p, base: 0, bonus: 0 }))
+    }));
+  } else {
+    f.atributos.forEach(attr => { if(!Array.isArray(attr.pericias)) attr.pericias = []; });
+  }
+  if(!f.vida)     f.vida     = { atual: 10, max: 10 };
+  if(!f.sanidade) f.sanidade = { atual: 10, max: 10 };
+  if(!f.energia)  f.energia  = { atual: 10, max: 10 };
+  return f;
+}
+
 // garante que toda entrada do elenco fixo exista nos dados carregados
 // (ex: primeira vez que o blob é usado, ou se o elenco mudou em config.js)
+// e conserta qualquer ficha existente cujos campos de array tenham sido
+// removidos pelo Firebase (ver sanearFicha acima).
 function garantirFichasCompletas(store){
   window.ARTON_ROSTER.forEach(r => {
     if(!store.data.fichas.find(f => f.id === r.id)){
       store.data.fichas.push(blankFichaFor(r));
     }
   });
+  store.data.fichas.forEach(sanearFicha);
 }

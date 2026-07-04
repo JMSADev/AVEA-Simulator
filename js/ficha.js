@@ -278,6 +278,7 @@ function blocoGauge(titulo, obj, gaugeClass){
 }
 
 function blocoAtributo(f, attr, ai){
+  attr.pericias = attr.pericias || []; // idem: array vazio some no Firebase
   const card = el('div', { class:'attr-card' });
   card.appendChild(el('div', { class:'attr-card-head' }, [
     el('input', { type:'text', value: attr.nome, style:'font-family:var(--font-mono);text-transform:uppercase;font-size:.78rem;letter-spacing:.1em;background:transparent;border:none;color:var(--brass-bright);padding:0;',
@@ -304,6 +305,7 @@ function blocoAtributo(f, attr, ai){
 }
 
 function blocoLista({ titulo, itens, addLabel, onAdd, renderItem }){
+  itens = itens || []; // o Firebase remove campos que são array vazio, então isso pode vir undefined
   const wrap = el('div', { class:'panel' });
   wrap.appendChild(el('div', { class:'panel-head' }, [
     el('h2', {}, [titulo]),
